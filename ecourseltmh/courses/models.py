@@ -1,12 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from ckeditor.fields import RichTextField
+from cloudinary.models import CloudinaryField
 
 # Create your models here.
 
 
 class User(AbstractUser):
-    pass
+    avatar = CloudinaryField(null=True)
 
 
 class BaseModel(models.Model):
@@ -17,6 +18,13 @@ class BaseModel(models.Model):
     #Thiết lập abstract
     class Meta:
         abstract = True
+
+
+class Category(BaseModel):
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Tag(BaseModel):
@@ -33,28 +41,21 @@ class ItemBase(BaseModel):
         abstract = True
 
 
-class Category(BaseModel):
-    name = models.CharField(max_length=50, unique=True)
-
-    def __str__(self):
-        return self.name
-
-
 class Course(ItemBase):
-    subject = models.CharField(max_length=100, unique=True)
-    description = RichTextField()
+    subject = models.CharField(max_length=100, null=True)
+    description = RichTextField(null=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='courses/%Y/%m/')
+    image = CloudinaryField(null=True)
 
     def __str__(self):
         return self.subject
 
 
 class Lesson(ItemBase):
-    subject = models.CharField(max_length=100, unique=True)
-    content = RichTextField()
+    subject = models.CharField(max_length=100, null=True)
+    content = RichTextField(null=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='lessons/%Y/%m/')
+    image = CloudinaryField(null=True)
 
     def __str__(self):
         return self.subject
@@ -71,11 +72,12 @@ class Interaction(BaseModel):
 class Comment(Interaction):
     content = models.CharField(max_length=255)
 
-    def __str__(self):
-        return self.content
-
 
 class Like(Interaction):
 
     class Meta:
         unique_together = ('user', 'lesson')
+
+
+# from django.db.models import Count
+# c = Category.objects.annotate(counter=Course('course_set')).values('id', 'name', 'counter')
