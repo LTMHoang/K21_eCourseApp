@@ -1,3 +1,4 @@
+from django.contrib.admin import action
 from rest_framework import serializers
 from courses.models import *
 
@@ -56,3 +57,9 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'first_name', 'last_name', 'username', 'password', 'email', 'avatar']
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['id', 'content', 'created_date', 'user']
