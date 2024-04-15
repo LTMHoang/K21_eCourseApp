@@ -68,10 +68,18 @@ class LessonViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
     serializer_class = serializers.LessonDetailSerializer
 
     def get_permissions(self):
-        if self.action in ['add_comment']:
+        if self.action in ['add_comment', 'like']:
             return [permissions.IsAuthenticated()]
 
         return [permissions.AllowAny()]
+
+    def get_serializer_class(self):
+        # Like có chứng thực
+        if self.request.user.is_authenticated:
+            return serializers.AuthenticatedLessonDetailSerializer
+
+        # Like không có chứng thực
+        return serializers.LessonDetailSerializer
 
     @action(methods=['get'], url_path='comments', detail=True)
     def get_comments(self, request, pk):
@@ -101,9 +109,18 @@ class LessonViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
                                                  user=request.user)
         return Response(serializers.CommentSerializer(c).data, status=status.HTTP_201_CREATED)
 
+    @action(methods=['post'], url_path='like', detail=True)
+    def like(self, request, pk):
+        li, created = Like.objects.get_or_create(lesson=self.get_object(), user=request.user)
+
+        if not created:
+            li.active = not li.active
+            li.save()
+
+        return Response(serializers.AuthenticatedLessonDetailSerializer(self.get_object()).data)
+
 
 class CommentViewSet(viewsets.ViewSet, generics.DestroyAPIView, generics.UpdateAPIView):
     queryset = Comment.objects.all()
     serializer_class = serializers.CommentSerializer
     permission_classes = [perms.CommentOwner]
-

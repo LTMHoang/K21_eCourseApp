@@ -43,6 +43,17 @@ class LessonDetailSerializer(LessonSerializer):
         fields = LessonSerializer.Meta.fields + ['content', 'tags']
 
 
+class AuthenticatedLessonDetailSerializer(LessonDetailSerializer):
+    liked = serializers.SerializerMethodField()
+
+    def get_liked(self, lesson):
+        return lesson.like_set.filter(active=True).exists()
+
+    class Meta:
+        model = LessonDetailSerializer.Meta.model
+        fields = LessonDetailSerializer.Meta.fields + ['liked']
+
+
 class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
