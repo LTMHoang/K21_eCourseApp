@@ -15,3 +15,4 @@ Các câu lệnh trong Django
 6. Tạo user: python manage.py createsuperuser
     User: admin
     Pass: 123456
+    Pass: 123456

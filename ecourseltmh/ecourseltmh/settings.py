@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-@8jloj=j)sd5*apd%4+p%5-gf)oy-8t30w@#-wn=2m+^lcf6@8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# Cho phép các máy local được bắt API
+ALLOWED_HOSTS = ['192.168.1.45']
 
 import pymysql
 
