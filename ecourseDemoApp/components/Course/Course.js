@@ -6,8 +6,9 @@ import MyStyle from "../../styles/MyStyle"
 import moment from "moment";
 import 'moment/locale/vi'
 import Item from "../Utils/Item";
+import { isCloseToBottom } from "../Utils/Utils";
 
-const Course = ({navigation}) => {
+const Course = ({ navigation }) => {
     const [categories, setCategories] = React.useState(null);
     const [courses, setCourses] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
@@ -47,11 +48,11 @@ const Course = ({navigation}) => {
         }
     }
 
-    const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
-        const paddingToBottom = 20;
-        return layoutMeasurement.height + contentOffset.y >=
-          contentSize.height - paddingToBottom;
-    };
+    // const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
+    //     const paddingToBottom = 20;
+    //     return layoutMeasurement.height + contentOffset.y >=
+    //       contentSize.height - paddingToBottom;
+    // };
 
     const loadMore = ({nativeEvent}) => {
         if (loading === false && isCloseToBottom(nativeEvent)) {
@@ -88,6 +89,7 @@ const Course = ({navigation}) => {
                 <RefreshControl onRefresh={() => loadCourses()}/>
                 {loading && <ActivityIndicator/>}
                 {courses.map(c => <TouchableOpacity key={c.id} onPress={() => navigation.navigate('Lesson', {'courseId': c.id})}>
+
                     {/* <List.Item 
                     title={c.subject} 
                     description={moment(c.created_date).fromNow()} 

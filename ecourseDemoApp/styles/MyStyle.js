@@ -7,7 +7,7 @@ export default StyleSheet.create({
         // justifyContent: "center",
         // alignItems: "center",
     }, subject: {
-        fontSize: 30,
+        fontSize: 23,
         fontWeight: "bold",
         color: "blue"
     }, row: {
